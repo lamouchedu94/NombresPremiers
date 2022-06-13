@@ -19,7 +19,6 @@ func main() {
 	nb := 1.0              // Valeur de départ
 	valMax := 10000        //Valeur du nombre maximum calculé
 	th := runtime.NumCPU() //Utilise le nombre max de coeur dispo ou a remplacer par le nb voulu.
-
 	flag.Parse()
 	if flag.NArg() > 0 {
 		nb, err = strconv.ParseFloat(flag.Arg(0), 32)
