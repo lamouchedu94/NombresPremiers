@@ -23,6 +23,16 @@ func Test_testNb(t *testing.T) {
 			args: args{nb: 6.0, max: 10},
 			want: 0,
 		},
+		{
+			name: "6263.0",
+			args: args{nb: 6263.0, max: 7000},
+			want: 1,
+		},
+		{
+			name: "3212.0",
+			args: args{nb: 3212.0, max: 4000},
+			want: 0,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
