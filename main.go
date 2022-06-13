@@ -7,6 +7,7 @@ import (
 	"os"
 	"runtime/pprof"
 	"strconv"
+	"sync"
 	"time"
 )
 
@@ -16,6 +17,7 @@ func main() {
 	var err error
 	nb := 1.0       // Valeur de départ
 	valMax := 10000 //Valeur du nombre maximum calculé
+	th := 16
 
 	flag.Parse()
 	if flag.NArg() > 0 {
@@ -38,22 +40,40 @@ func main() {
 		defer pprof.StopCPUProfile()
 	}
 
-	var tabNb []float64
+	var tabNb []int
+	var wg sync.WaitGroup
 	deb := time.Now()
-	for i := 0; i < valMax; i++ {
-		res := testNb(nb, valMax)
-		if res == 1 {
-			//fmt.Println(nb) //, "Est un nombre premier")
-			tabNb = append(tabNb, nb)
-		} /*else {
-			fmt.Println(nb, "N'est pas un nombre premier")
-		}*/
-		nb += 1.0
+
+	inter := interval(valMax, th)
+	for i := 0; i < th; i++ {
+
+		wg.Add(1)
+		go func(i int, nb float64, valMax int, inter int, tabNb []int) {
+			AffichageAppend(i, nb, valMax, inter, tabNb)
+			wg.Done()
+		}(i, nb, valMax, inter, tabNb)
+
 	}
+	wg.Wait()
 	fin := time.Now()
 	_ = tabNb
 	//fmt.Println(tabNb)
 	fmt.Println(fin.Sub(deb))
+}
+
+func AffichageAppend(j int, nb float64, valMax int, interval int, tabNb []int) {
+	for i := interval * j; i < interval*(j+1); i++ {
+		res := testNb(nb, valMax)
+		if res == 1 {
+			//fmt.Println(nb) //, "Est un nombre premier")
+			tabNb = append(tabNb, int(nb))
+		} /*else {
+			fmt.Println(nb, "N'est pas un nombre premier")
+		}*/
+
+		nb += 1.0
+	}
+	//fmt.Println(tabNb)
 }
 
 func testNb(nb float64, max int) int {
@@ -65,4 +85,8 @@ func testNb(nb float64, max int) int {
 		}
 	}
 	return 1
+}
+
+func interval(nb int, th int) int {
+	return nb / th
 }
