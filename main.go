@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 )
 
 //var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to `file`")
@@ -34,13 +35,24 @@ func main() {
 		}
 	*/
 	var tabNbPremier []int
-	tabNbPremier = calculInterval(100, tabNbPremier)
-	fmt.Println(tabNbPremier)
 
+	valMax := 10000
+	th := 1
+	deb := time.Now()
+	inter := Interval(valMax, th)
+
+	for j := 0; j < 1; j++ {
+
+		tabNbPremier = calculInterval(inter, j, tabNbPremier)
+	}
+	fin := time.Now()
+	fmt.Println(tabNbPremier)
+	fmt.Println(fin.Sub(deb))
 }
 
-func calculInterval(valMax int, tabNbPremier []int) []int {
-	for i := 0; i < valMax; i++ {
+func calculInterval(valMax int, j int, tabNbPremier []int) []int {
+
+	for i := valMax * j; i < valMax*(j+1); i++ {
 		if EstPremier(i, valMax) {
 			tabNbPremier = append(tabNbPremier, i)
 		}
@@ -55,4 +67,8 @@ func EstPremier(nb int, valMax int) bool {
 		}
 	}
 	return true
+}
+
+func Interval(valMax int, th int) int {
+	return valMax / th
 }
