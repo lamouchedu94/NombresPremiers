@@ -1,92 +1,58 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	"log"
-	"os"
-	"runtime"
-	"runtime/pprof"
-	"strconv"
-	"sync"
-	"time"
 )
 
-var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to `file`")
+//var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to `file`")
 
 func main() {
-	var err error
-	nb := 1.0              // Valeur de départ
-	valMax := 10000        //Valeur du nombre maximum calculé
-	th := runtime.NumCPU() //Utilise le nombre max de coeur dispo ou a remplacer par le nb voulu.
-	flag.Parse()
-	if flag.NArg() > 0 {
-		nb, err = strconv.ParseFloat(flag.Arg(0), 32)
-		if err != nil {
-			fmt.Println(err)
-			return
+	/*
+		var err error
+		nb := 1          // Valeur de départ
+		valMax := 100000 //Valeur du nombre maximum calculé
+		th := 16         //runtime.NumCPU() //Utilise le nombre max de coeur dispo ou a remplacer par le nb voulu.
+		flag.Parse()
+		if flag.NArg() > 0 {
+			nb, err = strconv.ParseFloat(flag.Arg(0), 32)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
 		}
-	}
 
-	if *cpuprofile != "" {
-		f, err := os.Create(*cpuprofile)
-		if err != nil {
-			log.Fatal("could not create CPU profile: ", err)
+		if *cpuprofile != "" {
+			f, err := os.Create(*cpuprofile)
+			if err != nil {
+				log.Fatal("could not create CPU profile: ", err)
+			}
+			defer f.Close() // error handling omitted for example
+			if err := pprof.StartCPUProfile(f); err != nil {
+				log.Fatal("could not start CPU profile: ", err)
+			}
+			defer pprof.StopCPUProfile()
 		}
-		defer f.Close() // error handling omitted for example
-		if err := pprof.StartCPUProfile(f); err != nil {
-			log.Fatal("could not start CPU profile: ", err)
-		}
-		defer pprof.StopCPUProfile()
-	}
+	*/
+	var tabNbPremier []int
+	tabNbPremier = calculInterval(100, tabNbPremier)
+	fmt.Println(tabNbPremier)
 
-	var tabNb []int
-	var wg sync.WaitGroup
-	deb := time.Now()
-
-	inter := interval(valMax, th)
-	for i := 0; i < th; i++ {
-
-		wg.Add(1)
-		go func(i int, nb float64, valMax int, inter int, tabNb []int) {
-			AffichageAppend(i, nb, valMax, inter, tabNb)
-			wg.Done()
-		}(i, nb, valMax, inter, tabNb)
-
-	}
-	wg.Wait()
-	fin := time.Now()
-	_ = tabNb
-	//fmt.Println(tabNb)
-	fmt.Println(fin.Sub(deb))
 }
 
-func AffichageAppend(j int, nb float64, valMax int, interval int, tabNb []int) {
-	for i := interval * j; i < interval*(j+1); i++ {
-		res := testNb(nb, valMax)
-		if res == 1 {
-			//fmt.Println(nb) //, "Est un nombre premier")
-			tabNb = append(tabNb, int(nb))
-		} /*else {
-			fmt.Println(nb, "N'est pas un nombre premier")
-		}*/
-
-		nb += 1.0
-	}
-	//fmt.Println(tabNb)
-}
-
-func testNb(nb float64, max int) int {
-	for i := 0; i < max; i++ {
-		res := nb / float64(i)
-		if res == float64(int(res)) && res != nb && res != 1 {
-			//fmt.Println(nb, "n'est pas un nombre premier")
-			return 0
+func calculInterval(valMax int, tabNbPremier []int) []int {
+	for i := 0; i < valMax; i++ {
+		if EstPremier(i, valMax) {
+			tabNbPremier = append(tabNbPremier, i)
 		}
 	}
-	return 1
+	return tabNbPremier
 }
 
-func interval(nb int, th int) int {
-	return nb / th
+func EstPremier(nb int, valMax int) bool {
+	for i := 1; i < valMax; i++ {
+		if nb%i == 0 && i != 1 && i != nb {
+			return false
+		}
+	}
+	return true
 }
