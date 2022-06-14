@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"sort"
+	"sync"
 	"time"
 )
 
@@ -35,36 +37,46 @@ func main() {
 		}
 	*/
 	tableauNombrePremier := []int{}
-	NombreMax := 100
-	th := 1
+	NombreMax := 200
+	th := 4
 	debut := 0
 	interval := Interval(NombreMax, th)
 	echantillon := interval
 	deb := time.Now()
 
-	//var wg sync.WaitGroup
-
+	var wg sync.WaitGroup
+	lockval := sync.Mutex{}
 	for i := 0; i < th; i++ {
 		if echantillon > NombreMax {
 			echantillon = debut + (NombreMax - debut)
 		}
-		tableauNombrePremier = calcul(tableauNombrePremier, debut, echantillon, NombreMax)
+		wg.Add(1)
+		go func(debut int, echantillon int) {
+			val := calcul(tableauNombrePremier, debut, echantillon, NombreMax)
+			lockval.Lock()
+			tableauNombrePremier = append(tableauNombrePremier, val...)
+			lockval.Unlock()
+			wg.Done()
+		}(debut, echantillon)
+
 		debut += interval
 		echantillon += interval
 	}
-
+	wg.Wait()
 	fin := time.Now()
+	sort.Ints(tableauNombrePremier)
 	fmt.Println(tableauNombrePremier)
 	fmt.Println(fin.Sub(deb))
 }
 
-func calcul(tableauNombrePremier []int, debut int, interval int, NombreMax int) []int {
-	for i := debut; i < interval; i++ {
+func calcul(tableauNombrePremier []int, debut int, echantillon int, NombreMax int) []int {
+	tabProvisoir := []int{}
+	for i := debut; i < echantillon; i++ {
 		if EstPremier(i, NombreMax) {
-			tableauNombrePremier = append(tableauNombrePremier, i)
+			tabProvisoir = append(tabProvisoir, i)
 		}
 	}
-	return tableauNombrePremier
+	return tabProvisoir
 }
 
 func EstPremier(nb int, valMax int) bool {
