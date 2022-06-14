@@ -51,6 +51,10 @@ func main() {
 	if th == 0 {
 		th = runtime.NumCPU()
 	}
+	if th > NombreMax {
+		fmt.Println("Nombre supérieur au nombre de thread.")
+		return
+	}
 	debut := 1
 	interval := Interval(NombreMax, th)
 	echantillon := interval

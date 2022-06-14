@@ -1,5 +1,16 @@
 # Générateur nombres premiers
 
-En go, changer la valeur de la variable valMax pour tester plus ou moins de nombres.
+En go, calcul les nombres premiers. Possibilité de Multithread (activé par défaut).
 
-Possibilité de Multithread.
+### Utilisation
+```
+./main nombre {options}
+
+nombre est la valeur jusqu'ou le programme va calculer les nombres premiers.
+
+Options : 
+    -v 
+        Afficher résultat
+    -th 
+        Choisir le nombre de thread voulu (par défaut le nombre maximal de thread disponibles.)
+```
