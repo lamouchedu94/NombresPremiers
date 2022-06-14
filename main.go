@@ -34,30 +34,37 @@ func main() {
 			defer pprof.StopCPUProfile()
 		}
 	*/
-	var tabNbPremier []int
-
-	valMax := 10000
+	tableauNombrePremier := []int{}
+	NombreMax := 100
 	th := 1
+	debut := 0
+	interval := Interval(NombreMax, th)
+	echantillon := interval
 	deb := time.Now()
-	inter := Interval(valMax, th)
 
-	for j := 0; j < 1; j++ {
+	//var wg sync.WaitGroup
 
-		tabNbPremier = calculInterval(inter, j, tabNbPremier)
+	for i := 0; i < th; i++ {
+		if echantillon > NombreMax {
+			echantillon = debut + (NombreMax - debut)
+		}
+		tableauNombrePremier = calcul(tableauNombrePremier, debut, echantillon, NombreMax)
+		debut += interval
+		echantillon += interval
 	}
+
 	fin := time.Now()
-	fmt.Println(tabNbPremier)
+	fmt.Println(tableauNombrePremier)
 	fmt.Println(fin.Sub(deb))
 }
 
-func calculInterval(valMax int, j int, tabNbPremier []int) []int {
-
-	for i := valMax * j; i < valMax*(j+1); i++ {
-		if EstPremier(i, valMax) {
-			tabNbPremier = append(tabNbPremier, i)
+func calcul(tableauNombrePremier []int, debut int, interval int, NombreMax int) []int {
+	for i := debut; i < interval; i++ {
+		if EstPremier(i, NombreMax) {
+			tableauNombrePremier = append(tableauNombrePremier, i)
 		}
 	}
-	return tabNbPremier
+	return tableauNombrePremier
 }
 
 func EstPremier(nb int, valMax int) bool {
@@ -70,5 +77,5 @@ func EstPremier(nb int, valMax int) bool {
 }
 
 func Interval(valMax int, th int) int {
-	return valMax / th
+	return (valMax / th) + 1
 }
