@@ -1,8 +1,11 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"runtime"
 	"sort"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -36,10 +39,19 @@ func main() {
 			defer pprof.StopCPUProfile()
 		}
 	*/
+
 	tableauNombrePremier := []int{}
-	NombreMax := 200
-	th := 4
-	debut := 0
+	flag.Parse()
+	NombreMax, err := strconv.Atoi(flag.Arg(0))
+	_ = err
+	if flag.Arg(0) == "help" || flag.Arg(0) == "" {
+		fmt.Println("./main nombre {option}")
+		fmt.Println("Option : -v pour afficher tableau de nombre")
+		return
+	}
+
+	th := runtime.NumCPU()
+	debut := 1
 	interval := Interval(NombreMax, th)
 	echantillon := interval
 	deb := time.Now()
@@ -64,23 +76,27 @@ func main() {
 	}
 	wg.Wait()
 	fin := time.Now()
-	sort.Ints(tableauNombrePremier)
-	fmt.Println(tableauNombrePremier)
+	Affichage := flag.Arg(1)
+	if Affichage == "-v" {
+		sort.Ints(tableauNombrePremier)
+		fmt.Println(tableauNombrePremier)
+	}
+
 	fmt.Println(fin.Sub(deb))
 }
 
 func calcul(tableauNombrePremier []int, debut int, echantillon int, NombreMax int) []int {
 	tabProvisoir := []int{}
 	for i := debut; i < echantillon; i++ {
-		if EstPremier(i, NombreMax) {
+		if EstPremier(i) {
 			tabProvisoir = append(tabProvisoir, i)
 		}
 	}
 	return tabProvisoir
 }
 
-func EstPremier(nb int, valMax int) bool {
-	for i := 1; i < valMax; i++ {
+func EstPremier(nb int) bool {
+	for i := 1; i < nb; i++ {
 		if nb%i == 0 && i != 1 && i != nb {
 			return false
 		}
