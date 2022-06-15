@@ -41,10 +41,20 @@ func main() {
 	*/
 
 	tableauNombrePremier := []int{}
-	flag.Parse()
+
+	Affichage, th, arret, Valeur := arguments()
+	if Valeur != 0 {
+		if EstPremier(Valeur) {
+			fmt.Println(Valeur, "Est un nombre premier.")
+		} else {
+			fmt.Println(Valeur, "N'est pas un nombre premier.")
+		}
+
+		return
+	}
+
 	NombreMax, err := strconv.Atoi(flag.Arg(0))
 	_ = err
-	Affichage, th, arret := arguments()
 	if arret {
 		return
 	}
@@ -98,41 +108,6 @@ func calcul(tableauNombrePremier []int, debut int, echantillon int, NombreMax in
 	return tabProvisoir
 }
 
-func EstPremier(nb int) bool {
-	for i := 1; i < nb; i++ {
-		if nb%i == 0 && i != 1 && i != nb {
-			return false
-		}
-	}
-	return true
-}
-
 func Interval(valMax int, th int) int {
 	return (valMax / th) + 1
-}
-
-func arguments() (bool, int, bool) {
-	Affichage := false
-	arret := false
-	th := 0
-	var err error
-	for index, v := range flag.Args() {
-		if v == "-v" {
-			Affichage = true
-		}
-		if v == "-th" {
-			th, err = strconv.Atoi(flag.Arg(index + 1))
-		}
-		if v == "" {
-			fmt.Println("./main nombre {option}")
-			fmt.Println("Option : -v pour afficher tableau de nombre\n-th {nombre thread} pour choisir nb thread (max dispo par defaut)")
-		}
-		_ = err
-	}
-	if len(flag.Args()) == 0 {
-		fmt.Println("./main nombre {option}")
-		fmt.Println("Option : \n-v pour afficher tableau de nombre\n-th {nombre thread} pour choisir nb thread (max dispo par defaut)")
-		arret = true
-	}
-	return Affichage, th, arret
 }
