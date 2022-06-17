@@ -100,7 +100,6 @@ func calcul(tableauNombrePremier []int, debut int, echantillon int, NombreMax in
 	tabProvisoir := []int{}
 	if debut == 0 {
 		debut += 1
-		//fmt.Println(debut, echantillon)
 	}
 	for i := debut; i < echantillon; i++ {
 		if EstPremier(i) {
@@ -111,6 +110,5 @@ func calcul(tableauNombrePremier []int, debut int, echantillon int, NombreMax in
 }
 
 func Interval(valMax int, th int) int {
-	//fmt.Println((valMax / th) + 1)
 	return (valMax / th) + 1
 }
