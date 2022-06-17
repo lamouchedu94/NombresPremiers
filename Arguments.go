@@ -17,7 +17,7 @@ func arguments() (bool, int, bool, int) {
 
 	if len(flag.Args()) == 0 && *ArgEstPremier == 0 {
 		fmt.Println("./main {option} nombre")
-		fmt.Println("Option : \n-v true pour afficher tableau de nombre\n-th {nombre thread} pour choisir nb thread (max dispo par defaut)")
+		fmt.Println("Option : \n-v pour afficher tableau de nombre\n-th {nombre thread} pour choisir nb thread (max dispo par defaut)")
 		arret = true
 	}
 
