@@ -39,7 +39,6 @@ func main() {
 			defer pprof.StopCPUProfile()
 		}
 	*/
-
 	tableauNombrePremier := []int{}
 
 	Affichage, th, arret, Valeur := arguments()
@@ -64,7 +63,7 @@ func main() {
 	if th > NombreMax {
 		th = 1
 	}
-	debut := 1
+	debut := 0
 	interval := Interval(NombreMax, th)
 	echantillon := interval
 	deb := time.Now()
@@ -99,6 +98,10 @@ func main() {
 
 func calcul(tableauNombrePremier []int, debut int, echantillon int, NombreMax int) []int {
 	tabProvisoir := []int{}
+	if debut == 0 {
+		debut += 1
+		//fmt.Println(debut, echantillon)
+	}
 	for i := debut; i < echantillon; i++ {
 		if EstPremier(i) {
 			tabProvisoir = append(tabProvisoir, i)
@@ -108,6 +111,6 @@ func calcul(tableauNombrePremier []int, debut int, echantillon int, NombreMax in
 }
 
 func Interval(valMax int, th int) int {
-	fmt.Println((valMax / th) + 1)
+	//fmt.Println((valMax / th) + 1)
 	return (valMax / th) + 1
 }
