@@ -12,7 +12,7 @@ func EstPremier1(nb int) bool {
 
 //Fonction opti
 func EstPremier(nb int) bool {
-	if nb%2 == 0 {
+	if nb%2 == 0 && nb > 2 {
 		return false
 	}
 	for i := 1; i < nb; i += 2 {

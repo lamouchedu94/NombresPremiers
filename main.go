@@ -62,8 +62,7 @@ func main() {
 		th = runtime.NumCPU()
 	}
 	if th > NombreMax {
-		fmt.Println("Nombre supérieur au nombre de thread.")
-		return
+		th = 1
 	}
 	debut := 1
 	interval := Interval(NombreMax, th)
@@ -109,5 +108,6 @@ func calcul(tableauNombrePremier []int, debut int, echantillon int, NombreMax in
 }
 
 func Interval(valMax int, th int) int {
+	fmt.Println((valMax / th) + 1)
 	return (valMax / th) + 1
 }
